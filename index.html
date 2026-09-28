@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gym Progress</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<header class="topbar">
+    <div>
+        <h1>GYM<span>PROGRESS</span></h1>
+        <p>Mi progreso de entrenamiento</p>
+    </div>
+
+    <button class="add-week-btn" onclick="openWeekModal()">
+        + Nueva semana
+    </button>
+</header>
+
+
+<main class="container">
+
+    <!-- RESUMEN GENERAL -->
+
+    <section class="dashboard">
+
+        <div class="stat-card">
+            <span>Semana actual</span>
+            <strong id="currentWeek">-</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Entrenamientos</span>
+            <strong id="totalWorkouts">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Ejercicios</span>
+            <strong id="totalExercises">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Volumen total</span>
+            <strong id="totalVolume">0 kg</strong>
+        </div>
+
+    </section>
+
+
+    <!-- PROGRESO -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+            <div>
+                <h2>Progreso</h2>
+                <p>Comparación entre semanas</p>
+            </div>
+        </div>
+
+        <div class="progress-table-wrapper">
+
+            <table class="progress-table">
+
+                <thead>
+                    <tr>
+                        <th>Grupo muscular</th>
+                        <th>Semana anterior</th>
+                        <th>Semana actual</th>
+                        <th>Cambio</th>
+                    </tr>
+                </thead>
+
+                <tbody id="progressTable">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- GRÁFICA -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>Evolución</h2>
+                <p>Selecciona un ejercicio para ver su progreso</p>
+            </div>
+
+            <select id="exerciseSelector" onchange="updateChart()">
+                <option value="">Seleccionar ejercicio</option>
+            </select>
+
+        </div>
+
+        <div class="chart-container">
+
+            <canvas id="progressChart"></canvas>
+
+        </div>
+
+    </section>
+
+
+    <!-- SEMANAS -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>Mis semanas</h2>
+                <p>Historial de entrenamientos</p>
+            </div>
+
+        </div>
+
+        <div id="weeksContainer"></div>
+
+    </section>
+
+</main>
+
+
+<!-- MODAL NUEVA SEMANA -->
+
+<div class="modal" id="weekModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>Nueva semana</h2>
+
+            <button onclick="closeWeekModal()">×</button>
+
+        </div>
+
+        <label>Nombre</label>
+
+        <input
+            type="text"
+            id="weekName"
+            placeholder="Ej: Semana 13"
+        >
+
+        <label>Fecha de inicio</label>
+
+        <input
+            type="date"
+            id="weekStart"
+        >
+
+        <button class="primary-btn" onclick="createWeek()">
+            Crear semana
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL EJERCICIO -->
+
+<div class="modal" id="exerciseModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2 id="exerciseModalTitle">
+                Agregar ejercicio
+            </h2>
+
+            <button onclick="closeExerciseModal()">×</button>
+
+        </div>
+
+
+        <label>Día</label>
+
+        <select id="exerciseDay">
+
+            <option value="Lunes">Lunes</option>
+            <option value="Martes">Martes</option>
+            <option value="Miércoles">Miércoles</option>
+            <option value="Jueves">Jueves</option>
+            <option value="Viernes">Viernes</option>
+
+        </select>
+
+
+        <label>Grupo muscular</label>
+
+        <select id="exerciseMuscle">
+
+            <option value="Pecho">Pecho</option>
+            <option value="Espalda">Espalda</option>
+            <option value="Hombros">Hombros</option>
+            <option value="Bíceps">Bíceps</option>
+            <option value="Tríceps">Tríceps</option>
+            <option value="Pierna">Pierna</option>
+            <option value="Glúteos">Glúteos</option>
+            <option value="Abdomen">Abdomen</option>
+            <option value="Otro">Otro</option>
+
+        </select>
+
+
+        <label>Ejercicio</label>
+
+        <input
+            type="text"
+            id="exerciseName"
+            placeholder="Ej: Press inclinado"
+        >
+
+
+        <label>Máquina / equipo</label>
+
+        <input
+            type="text"
+            id="exerciseMachine"
+            placeholder="Ej: Hammer Strength"
+        >
+
+
+        <div class="form-row">
+
+            <div>
+
+                <label>Peso (kg)</label>
+
+                <input
+                    type="number"
+                    id="exerciseWeight"
+                    placeholder="80"
+                    step="0.5"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>Series</label>
+
+                <input
+                    type="number"
+                    id="exerciseSets"
+                    placeholder="4"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>Repeticiones</label>
+
+                <input
+                    type="number"
+                    id="exerciseReps"
+                    placeholder="10"
+                >
+
+            </div>
+
+        </div>
+
+
+        <label>Notas</label>
+
+        <textarea
+            id="exerciseNotes"
+            placeholder="Ej: Me costó la última serie..."
+        ></textarea>
+
+
+        <button
+            class="primary-btn"
+            onclick="saveExercise()"
+        >
+            Guardar ejercicio
+        </button>
+
+    </div>
+
+</div>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
